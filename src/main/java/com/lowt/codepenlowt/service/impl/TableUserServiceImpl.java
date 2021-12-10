@@ -1,0 +1,78 @@
+package com.lowt.codepenlowt.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.lowt.codepenlowt.entity.TableUser;
+import com.lowt.codepenlowt.mapper.TableUserMapper;
+import com.lowt.codepenlowt.service.TableUserService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lowt.codepenlowt.vo.LoginInfoVO;
+import org.springframework.stereotype.Service;
+
+/**
+ * <p>
+ *  服务实现类
+ * </p>
+ *
+ * @author LOW_TASTE
+ * @since 2021-12-04
+ */
+@Service
+public class TableUserServiceImpl extends ServiceImpl<TableUserMapper, TableUser> implements TableUserService {
+
+    @Override
+    public TableUser login(LoginInfoVO loginInfoVO) {
+        QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_name",loginInfoVO.getUserName())
+                .eq("password",loginInfoVO.getPassword());
+        TableUser tableUser = baseMapper.selectOne(queryWrapper);
+        if (tableUser != null){
+            return tableUser;
+        } else {
+            throw new RuntimeException("认证失败");
+        }
+    }
+
+    @Override
+    public void register(TableUser tableUser) {
+        QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_name",tableUser.getUserName());
+        // 用户名占用
+        if (baseMapper.selectOne(queryWrapper)!=null){
+            System.out.println("here");
+            throw new RuntimeException("用户名占用");
+        } else {
+            baseMapper.insert(tableUser);
+        }
+    }
+
+    @Override
+    public void findBackPwd(TableUser tableUser) {
+        QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_name",tableUser.getUserName())
+                .eq("user_phone",tableUser.getUserPhone());
+        TableUser dbResult = baseMapper.selectOne(queryWrapper);
+        // 查到符合条件的用户 可以修改
+        if (dbResult != null){
+            // 结果更换并存入
+            dbResult.setPassword(tableUser.getPassword());
+            baseMapper.updateById(dbResult);
+        } else {
+            // 查不到用户
+            throw new RuntimeException("ERROR");
+        }
+    }
+
+    @Override
+    public void updateUserInfo(TableUser tableUser) {
+        QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_name",tableUser.getUserName())
+                .or()
+                .eq("user_phone",tableUser.getUserPhone())
+                .and(tableUserQueryWrapper -> tableUserQueryWrapper
+                        .ne("user_id",tableUser.getUserId()));
+        if (baseMapper.selectOne(queryWrapper) != null){
+            System.out.println("修改失败");
+            throw new RuntimeException("用户名或号码重复(_　_)zZ");
+        }
+    }
+}
