@@ -11,8 +11,8 @@
     <groupId>com.lowt</groupId>
     <artifactId>codepenlowt</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>codepenlowt</name>
-    <description>codepenlowt</description>
+    <name>lsw-codepen-backend</name>
+    <description>lsw-codepen-backend</description>
     <properties>
         <java.version>11</java.version>
     </properties>
