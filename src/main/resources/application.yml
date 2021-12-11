@@ -13,3 +13,4 @@ kaptcha:
     height: 40
   session:
     key: code
+
