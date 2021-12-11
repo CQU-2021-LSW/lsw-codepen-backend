@@ -5,6 +5,7 @@ import com.lowt.codepenlowt.entity.TableUser;
 import com.lowt.codepenlowt.service.TableUserService;
 import com.lowt.codepenlowt.utils.JWTUtils;
 import com.lowt.codepenlowt.utils.R;
+import com.lowt.codepenlowt.utils.SessionConstant;
 import com.lowt.codepenlowt.vo.LoginInfoVO;
 import com.lowt.codepenlowt.vo.UserInfo;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
@@ -14,6 +15,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,13 +38,16 @@ public class UserController {
     TableUserService tableUserService;
 
     @PostMapping("login")
-    public R login(@RequestBody LoginInfoVO loginInfoVO){
-        System.out.println(loginInfoVO.getUserName());
+    public R login(HttpServletRequest request, @RequestBody LoginInfoVO loginInfoVO){
+        if (!request.getSession().getAttribute(SessionConstant.IMAGE_CODE).equals(loginInfoVO.getImageCode())){
+            System.out.println(request.getSession().getAttribute(SessionConstant.IMAGE_CODE)+"@@");
+            return R.error("验证码错误");
+        }
         Map<String,Object> map = new HashMap<>();
         TableUser tableUser = new TableUser();
         try {
             tableUser = tableUserService.login(loginInfoVO);
-            System.out.println(tableUser);
+//            System.out.println(tableUser);
             Map<String,String> playLoad = new HashMap<>();
             playLoad.put("id", tableUser.getUserId().toString());
             playLoad.put("name", tableUser.getUserName());
