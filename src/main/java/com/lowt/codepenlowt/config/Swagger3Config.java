@@ -10,10 +10,9 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
-
 @Configuration
 @EnableOpenApi
-public class Swagger3Configration {
+public class Swagger3Config {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.OAS_30)

@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class UserInfo implements Serializable {
+public class UserInfoVO implements Serializable {
 
     private Long userId;
 
@@ -25,4 +25,6 @@ public class UserInfo implements Serializable {
     private String userAddr;
 
     private String userEmail;
+
+    private String userPhoto;
 }

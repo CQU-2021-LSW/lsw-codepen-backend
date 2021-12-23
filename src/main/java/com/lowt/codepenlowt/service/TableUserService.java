@@ -24,4 +24,6 @@ public interface TableUserService extends IService<TableUser> {
     void findBackPwd(TableUser tableUser);
 
     void updateUserInfo(TableUser tableUser);
+
+    void updateUserPhoto(String userPhotoUrl,Long userId);
 }
