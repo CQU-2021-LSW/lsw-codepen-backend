@@ -25,4 +25,5 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(new JWTInterceptor())
                 .excludePathPatterns("/**");
     }
+
 }

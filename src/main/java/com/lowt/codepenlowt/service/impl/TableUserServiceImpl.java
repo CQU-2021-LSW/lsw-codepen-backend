@@ -1,10 +1,10 @@
 package com.lowt.codepenlowt.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lowt.codepenlowt.entity.TableUser;
 import com.lowt.codepenlowt.mapper.TableUserMapper;
 import com.lowt.codepenlowt.service.TableUserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lowt.codepenlowt.vo.LoginInfoVO;
 import org.springframework.stereotype.Service;
 
@@ -74,5 +74,13 @@ public class TableUserServiceImpl extends ServiceImpl<TableUserMapper, TableUser
             System.out.println("修改失败");
             throw new RuntimeException("用户名或号码重复(_　_)zZ");
         }
+    }
+
+    @Override
+    public void updateUserPhoto(String userPhotoUrl, Long userId) {
+        QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
+        TableUser tableUser = baseMapper.selectById(userId);
+        tableUser.setUserPhoto(userPhotoUrl);
+        baseMapper.updateById(tableUser);
     }
 }

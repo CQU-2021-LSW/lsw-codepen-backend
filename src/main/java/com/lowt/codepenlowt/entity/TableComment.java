@@ -1,8 +1,5 @@
 package com.lowt.codepenlowt.entity;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -12,20 +9,23 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author LOW_TASTE
  * @since 2021-12-04
  */
 @Data
-  @EqualsAndHashCode(callSuper = false)
-  @Accessors(chain = true)
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class TableComment implements Serializable {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     @TableId(value = "comment_id", type = IdType.AUTO)
     private Long commentId;
@@ -33,9 +33,7 @@ public class TableComment implements Serializable {
     private Long userId;
 
     private String commentText;
-
-    private Long likes;
-
+    
     private Integer topicId;
 
     private Long preCommentId;

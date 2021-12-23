@@ -8,6 +8,12 @@ import java.io.Serializable;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CommentVO extends TableComment implements Serializable{
+public class CommentVO extends TableComment implements Serializable {
+
     String userName;
+
+    Long likeCount;
+
+    Integer liked;
+    
 }

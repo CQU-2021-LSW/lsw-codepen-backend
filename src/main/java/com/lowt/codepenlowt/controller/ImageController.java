@@ -32,9 +32,9 @@ public class ImageController {
     @Autowired
     private DefaultKaptcha defaultKaptcha;
 
-//    @ApiOperation(value = "获取验证码")
+    //    @ApiOperation(value = "获取验证码")
     @GetMapping(value = "/code")
-    public R kaptcha(HttpServletRequest request, HttpServletResponse response){
+    public R kaptcha(HttpServletRequest request, HttpServletResponse response) {
         byte[] captchaChallengeAsJpeg;
         ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
         /**
@@ -49,10 +49,10 @@ public class ImageController {
          */
         BufferedImage challenge = defaultKaptcha.createImage(createText);
         try {
-            ImageIO.write(challenge,"jpg",jpegOutputStream);
+            ImageIO.write(challenge, "jpg", jpegOutputStream);
         } catch (IOException e) {
-            log.error("生成图形验证码失败",e);
-            throw new BusinessException(ErrorEnum.CRATE_IMAGE_ERROR);	// 抛出异常，可以不用关心
+            log.error("生成图形验证码失败", e);
+            throw new BusinessException(ErrorEnum.CRATE_IMAGE_ERROR.getKey());    // 抛出异常，可以不用关心
         }
         /**
          * 定义response输出类型为image/jpeg类型，使用response输出流输出图片的byte数组
@@ -60,7 +60,7 @@ public class ImageController {
         captchaChallengeAsJpeg = jpegOutputStream.toByteArray();
         response.setHeader("Cache-Control", "no-store");
         response.setHeader("Pragma", "no-cache");
-        response.setDateHeader("Expires",0);
+        response.setDateHeader("Expires", 0);
         response.setContentType("image/jpeg");
         try {
             ServletOutputStream servletOutputStream = response.getOutputStream();
@@ -68,8 +68,8 @@ public class ImageController {
             servletOutputStream.flush();
             servletOutputStream.close();
         } catch (IOException e) {
-            log.error("输出验证码失败",e);
-            throw new BusinessException(ErrorEnum.CRATE_IMAGE_ERROR);	// 抛出异常，可以不用关心
+            log.error("输出验证码失败", e);
+            throw new BusinessException(ErrorEnum.CRATE_IMAGE_ERROR.getKey());    // 抛出异常，可以不用关心
         }
         return null;
     }
