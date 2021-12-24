@@ -1,11 +1,15 @@
 package com.lowt.codepenlowt.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    @Value("${img.upload-path}")
+    private String webUploadPath;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -15,6 +19,9 @@ public class WebConfig implements WebMvcConfigurer {
 //                .addResourceLocations("file:" + "D:///szzb-welfarework/import/img/zzysj/"); //绝对路径
 
         registry.addResourceHandler("/img/photo/**")
-                .addResourceLocations("file:" + "C:\\Users\\LOW_TASTE\\Pictures\\imgUpload\\");
+                .addResourceLocations("file:" + webUploadPath);
+
+//        registry.addResourceHandler("/img/photo/**")
+//                .addResourceLocations("file:" + webUploadPath);
     }
 }

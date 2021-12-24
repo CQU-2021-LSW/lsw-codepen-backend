@@ -9,5 +9,5 @@ import java.io.Serializable;
 public class LoginInfoVO implements Serializable {
     private String userName;
     private String password;
-    private String imageCode;
+//    private String imageCode;
 }
