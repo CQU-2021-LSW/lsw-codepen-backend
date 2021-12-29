@@ -65,15 +65,19 @@ public class TableUserServiceImpl extends ServiceImpl<TableUserMapper, TableUser
     @Override
     public void updateUserInfo(TableUser tableUser) {
         QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_name",tableUser.getUserName())
-                .or()
-                .eq("user_phone",tableUser.getUserPhone())
-                .and(tableUserQueryWrapper -> tableUserQueryWrapper
-                        .ne("user_id",tableUser.getUserId()));
+        // 不是这个id
+        queryWrapper.ne("user_id",tableUser.getUserId());
+        // 用户名和电话有一个已经存在就不能改
+        queryWrapper.and(tableUserQueryWrapper -> {
+            tableUserQueryWrapper.eq("user_name",tableUser.getUserName())
+                    .or()
+                    .eq("user_phone",tableUser.getUserPhone());
+        });
         if (baseMapper.selectOne(queryWrapper) != null){
             System.out.println("修改失败");
             throw new RuntimeException("用户名或号码重复(_　_)zZ");
         }
+        baseMapper.updateById(tableUser);
     }
 
     @Override

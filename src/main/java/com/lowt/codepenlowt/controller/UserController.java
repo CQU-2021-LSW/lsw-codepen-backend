@@ -5,13 +5,13 @@ import com.lowt.codepenlowt.entity.TableUser;
 import com.lowt.codepenlowt.service.TableUserService;
 import com.lowt.codepenlowt.utils.JWTUtils;
 import com.lowt.codepenlowt.utils.R;
-import com.lowt.codepenlowt.utils.SessionConstant;
 import com.lowt.codepenlowt.vo.LoginInfoVO;
 import com.lowt.codepenlowt.vo.UserInfoVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,10 +37,10 @@ public class UserController {
 
     @PostMapping("login")
     public R login(HttpServletRequest request, @RequestBody LoginInfoVO loginInfoVO) {
-        if (!request.getSession().getAttribute(SessionConstant.IMAGE_CODE).equals(loginInfoVO.getImageCode())) {
-            System.out.println(request.getSession().getAttribute(SessionConstant.IMAGE_CODE) + "@@");
-            return R.error("验证码错误");
-        }
+//        if (!request.getSession().getAttribute(SessionConstant.IMAGE_CODE).equals(loginInfoVO.getImageCode())) {
+//            System.out.println(request.getSession().getAttribute(SessionConstant.IMAGE_CODE) + "@@");
+//            return R.error("验证码错误");
+//        }
         Map<String, Object> map = new HashMap<>();
         TableUser tableUser = new TableUser();
         try {
@@ -83,7 +83,7 @@ public class UserController {
     }
 
     @GetMapping("userInfo")
-    @Cacheable(cacheNames = "userInfo")
+    @Cacheable(value = "userInfo", key = "#userId")
     public R getUserInfo(Long userId) {
         TableUser tableUser = tableUserService.getById(userId);
         if (tableUser == null) {
@@ -96,8 +96,8 @@ public class UserController {
     }
 
     // 更新
-    @CachePut("userInfo")
     @PostMapping("update")
+    @Caching(evict = @CacheEvict(cacheNames = "userInfo", key = "#tableUser.userId"))
     public R updateUserInfo(@RequestBody TableUser tableUser) {
         try {
             tableUserService.updateUserInfo(tableUser);

@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.Objects;
 
 @RequestMapping("upload")
@@ -31,8 +30,15 @@ public class FileUploadController {
      * web:
      * upload-path: （jar包所在目录）/resources/static/
      */
+
     @Value("${img.upload-path}")
     private String webUploadPath;
+
+    @Value("${img.upload-server-ip}")
+    public String imgFileServerIp;
+
+    @Value("${img.upload-server-port}")
+    public String imgFileServerPort;
 
     /**
      * 基于用户标识的头像上传
@@ -54,13 +60,13 @@ public class FileUploadController {
                     String suffix = suffixStr[suffixStr.length - 1];
                     File newFile = new File(webUploadPath + userId + "." + suffix);
                     file.transferTo(newFile);
-
-                    // 给用户存入URL
-                    // 获得本机Ip（获取的是服务器的Ip）
-                    InetAddress inetAddress = InetAddress.getLocalHost();
-                    String ip = inetAddress.getHostAddress();
+//                    // Linux下有问题
+//                    // 给用户存入URL
+//                    // 获得本机Ip（获取的是服务器的Ip）
+//                    InetAddress inetAddress = InetAddress.getLocalHost();
+//                    String ip = inetAddress.getHostAddress();
                     // 返回保存的url，根据url可以进行文件查看或者下载
-                    String fileDownloadUrl = ip + ":9999" + "/img/photo/" + userId + "." + suffix;
+                    String fileDownloadUrl = imgFileServerIp + ":" + imgFileServerPort + "/img/photo/" + userId + "." + suffix;
                     //在这里把路径url存到数据库
                     tableUserService.updateUserPhoto(fileDownloadUrl, userId);
                     //返回保存的url
