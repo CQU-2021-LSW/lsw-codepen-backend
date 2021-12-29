@@ -9,8 +9,9 @@ import com.lowt.codepenlowt.vo.LoginInfoVO;
 import com.lowt.codepenlowt.vo.UserInfoVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -82,7 +83,7 @@ public class UserController {
     }
 
     @GetMapping("userInfo")
-    @Cacheable(cacheNames = "userInfo")
+    @Cacheable(value = "userInfo", key = "#userId")
     public R getUserInfo(Long userId) {
         TableUser tableUser = tableUserService.getById(userId);
         if (tableUser == null) {
@@ -95,8 +96,8 @@ public class UserController {
     }
 
     // 更新
-    @CachePut("userInfo")
     @PostMapping("update")
+    @Caching(evict = @CacheEvict(cacheNames = "userInfo", key = "#tableUser.userId"))
     public R updateUserInfo(@RequestBody TableUser tableUser) {
         try {
             tableUserService.updateUserInfo(tableUser);
