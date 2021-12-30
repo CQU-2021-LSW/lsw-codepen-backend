@@ -66,6 +66,7 @@ public class CommentController {
                 for (TableUser tableUser : tableUsers) {
                     if (tableUser.getUserId().equals(tableComment.getUserId())) {
                         commentVO.setUserName(tableUser.getUserName());
+                        commentVO.setUserPhoto(tableUser.getUserPhoto());
                     }
                 }
                 // 匹配点赞数量

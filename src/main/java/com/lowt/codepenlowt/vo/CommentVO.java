@@ -10,10 +10,12 @@ import java.io.Serializable;
 @Data
 public class CommentVO extends TableComment implements Serializable {
 
-    String userName;
+    private String userPhoto;
 
-    Long likeCount;
+    private String userName;
 
-    Integer liked;
+    private Long likeCount;
+
+    private Integer liked;
     
 }
