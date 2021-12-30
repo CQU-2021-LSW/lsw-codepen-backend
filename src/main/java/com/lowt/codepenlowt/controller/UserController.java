@@ -41,34 +41,31 @@ public class UserController {
 //            System.out.println(request.getSession().getAttribute(SessionConstant.IMAGE_CODE) + "@@");
 //            return R.error("验证码错误");
 //        }
-        Map<String, Object> map = new HashMap<>();
-        TableUser tableUser = new TableUser();
+        UserInfoVO userInfoVO = new UserInfoVO();
+        String token = "REFUSE";
         try {
-            tableUser = tableUserService.login(loginInfoVO);
-//            System.out.println(tableUser);
+            TableUser tableUser = tableUserService.login(loginInfoVO);
+            BeanUtils.copyProperties(tableUser, userInfoVO);
             Map<String, String> playLoad = new HashMap<>();
             playLoad.put("id", tableUser.getUserId().toString());
             playLoad.put("name", tableUser.getUserName());
-            String token = JWTUtils.getToken(playLoad);
-            map.put("state", true);
-            map.put("msg", "认证成功");
-            map.put("token", token);
+            token = JWTUtils.getToken(playLoad);
         } catch (Exception e) {
-            map.put("state", false);
-            map.put("msg", e.getMessage());
+            return R.error(500,"登陆失败");
         }
-        return R.ok(map).put("userId", tableUser.getUserId());
+        return Objects.requireNonNull(R.ok().put("data", userInfoVO)).put("token",token);
     }
 
     // 校验 JR303 加上 前端检查
     @PostMapping("register")
     public R register(@RequestBody TableUser tableUser) {
+        TableUser tableUserSuccess = new TableUser();
         try {
-            tableUserService.register(tableUser);
+            tableUserSuccess = tableUserService.register(tableUser);
         } catch (Exception e) {
             return Objects.requireNonNull(R.error().put("state", false)).put("msg", "用户名占用");
         }
-        return R.ok().put("state", true);
+        return R.ok().put("data", tableUserSuccess);
     }
 
     // 找回密码

@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableCaching
 public interface TableUserService extends IService<TableUser> {
-    public TableUser login(LoginInfoVO loginInfoVO);
+    TableUser login(LoginInfoVO loginInfoVO);
 
-    void register(TableUser tableUser);
+    TableUser register(TableUser tableUser);
 
     void findBackPwd(TableUser tableUser);
 

@@ -33,16 +33,16 @@ public class TableUserServiceImpl extends ServiceImpl<TableUserMapper, TableUser
     }
 
     @Override
-    public void register(TableUser tableUser) {
+    public TableUser register(TableUser tableUser) {
         QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_name",tableUser.getUserName());
         // 用户名占用
-        if (baseMapper.selectOne(queryWrapper)!=null){
-            System.out.println("here");
+        if (baseMapper.selectOne(queryWrapper) != null){
             throw new RuntimeException("用户名占用");
         } else {
             baseMapper.insert(tableUser);
         }
+        return tableUser;
     }
 
     @Override
