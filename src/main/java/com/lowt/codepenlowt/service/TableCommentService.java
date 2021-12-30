@@ -2,8 +2,13 @@ package com.lowt.codepenlowt.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lowt.codepenlowt.entity.TableComment;
+import com.lowt.codepenlowt.vo.CommentVO;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.html.HTMLTableElement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +21,7 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableCaching
 public interface TableCommentService extends IService<TableComment> {
-    
+    List<CommentVO> getSubComment(Long commentId, Long userId);
+
+    List<CommentVO> getPreCommentList(Long userId);
 }
