@@ -54,44 +54,7 @@ public class CommentController {
     @GetMapping("getCommentList")
     public R getCommentList(@RequestParam(name = "userId", required = false) Long userId) {
         try {
-            List<TableComment> tableComments = tableCommentService.list();
-            List<TableUser> tableUsers = tableUserService.list();
-            List<CommentVO> commentVOS = new ArrayList<>();
-
-            for (TableComment tableComment : tableComments) {
-                CommentVO commentVO = new CommentVO();
-                BeanUtils.copyProperties(tableComment, commentVO);
-
-                // 匹配姓名
-                for (TableUser tableUser : tableUsers) {
-                    if (tableUser.getUserId().equals(tableComment.getUserId())) {
-                        commentVO.setUserName(tableUser.getUserName());
-                        commentVO.setUserPhoto(tableUser.getUserPhoto());
-                    }
-                }
-                // 匹配点赞数量
-                // Redis中的数量
-                Long likeCount = redisService.getLikedCountRedisByLikedCommentId(tableComment.getCommentId());
-                // Mysql中的数量
-                likeCount += tableUserLikedService.getLikedListByLikedCommentId(tableComment.getCommentId()).size();
-                commentVO.setLikeCount(likeCount);
-                if (userId != null) {
-                    Integer status = 0;
-                    // Redis和数据库
-                    status = redisService.getLikedFromRedis(tableComment.getCommentId(), userId);
-                    // 如果Redis没有
-                    if (status == -1) {
-                        TableUserLiked byLikedCommentIdAndLikedPostId = tableUserLikedService.getByLikedCommentIdAndLikedPostId(tableComment.getCommentId(), userId);
-                        if (byLikedCommentIdAndLikedPostId == null) {
-                            status = 0;
-                        } else {
-                            status = byLikedCommentIdAndLikedPostId.getStatus();
-                        }
-                    }
-                    commentVO.setLiked(status);
-                }
-                commentVOS.add(commentVO);
-            }
+            List<CommentVO> commentVOS = tableCommentService.getPreCommentList(userId);
             return R.ok().put("data", commentVOS);
         } catch (Exception e) {
             return R.error();
@@ -131,5 +94,25 @@ public class CommentController {
         return R.error();
     }
 
+
+    @PostMapping("delComment")
+    public R delComment(@RequestBody Long commentId) {
+        try {
+            tableCommentService.removeById(commentId);
+            return R.ok();
+        } catch (Exception e) {
+            return R.error(500, "删除失败");
+        }
+    }
+
+
+    @GetMapping("getSubComment")
+    public R getSubComment(@RequestParam Long commentId, @RequestParam(name = "userId", required = false) Long userId) {
+        try {
+            return R.ok().put("data", tableCommentService.getSubComment(commentId, userId));
+        } catch (Exception e) {
+            return R.error(500, " 获取失败");
+        }
+    }
 }
 

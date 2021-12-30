@@ -1,5 +1,11 @@
 package com.lowt.codepenlowt;
 
+import com.lowt.codepenlowt.controller.CommentController;
+import com.lowt.codepenlowt.entity.TableComment;
+import com.lowt.codepenlowt.entity.TableUserLiked;
+import com.lowt.codepenlowt.service.TableCommentService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -45,5 +51,11 @@ class CodepenlowtApplicationTests {
 //    void test() {
 //        System.out.println(redisTemplate.opsForHash().get("DAMN", "LL"));
 //    }
+    @Autowired
+    CommentController commentController;
 
+    @Test
+    void test() {
+        commentController.getCommentList(null);
+    }
 }
