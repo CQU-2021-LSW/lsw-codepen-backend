@@ -17,5 +17,7 @@ public class CommentVO extends TableComment implements Serializable {
     private Long likeCount;
 
     private Integer liked;
-    
+
+    private Long subCommentNum = 0L;
+
 }

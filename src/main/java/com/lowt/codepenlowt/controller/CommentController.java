@@ -2,7 +2,6 @@ package com.lowt.codepenlowt.controller;
 
 
 import com.lowt.codepenlowt.entity.TableComment;
-import com.lowt.codepenlowt.entity.TableUser;
 import com.lowt.codepenlowt.entity.TableUserLiked;
 import com.lowt.codepenlowt.service.RedisService;
 import com.lowt.codepenlowt.service.TableCommentService;
@@ -10,11 +9,9 @@ import com.lowt.codepenlowt.service.TableUserLikedService;
 import com.lowt.codepenlowt.service.TableUserService;
 import com.lowt.codepenlowt.utils.R;
 import com.lowt.codepenlowt.vo.CommentVO;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,7 +51,7 @@ public class CommentController {
     @GetMapping("getCommentList")
     public R getCommentList(@RequestParam(name = "userId", required = false) Long userId) {
         try {
-            List<CommentVO> commentVOS = tableCommentService.getPreCommentList(userId);
+            List<CommentVO> commentVOS = tableCommentService.getCommentList(null, userId);
             return R.ok().put("data", commentVOS);
         } catch (Exception e) {
             return R.error();
@@ -109,7 +106,7 @@ public class CommentController {
     @GetMapping("getSubComment")
     public R getSubComment(@RequestParam Long commentId, @RequestParam(name = "userId", required = false) Long userId) {
         try {
-            return R.ok().put("data", tableCommentService.getSubComment(commentId, userId));
+            return R.ok().put("data", tableCommentService.getCommentList(commentId, userId));
         } catch (Exception e) {
             return R.error(500, " 获取失败");
         }

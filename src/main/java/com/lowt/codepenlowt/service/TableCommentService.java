@@ -5,9 +5,7 @@ import com.lowt.codepenlowt.entity.TableComment;
 import com.lowt.codepenlowt.vo.CommentVO;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.html.HTMLTableElement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +19,9 @@ import java.util.List;
 @Service
 @EnableCaching
 public interface TableCommentService extends IService<TableComment> {
-    List<CommentVO> getSubComment(Long commentId, Long userId);
+/*    List<CommentVO> getSubComment(Long commentId, Long userId);
 
-    List<CommentVO> getPreCommentList(Long userId);
+    List<CommentVO> getPreCommentList(Long userId);*/
+
+    List<CommentVO> getCommentList(Long commentId, Long userId);
 }
