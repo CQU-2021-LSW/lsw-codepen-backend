@@ -1,6 +1,7 @@
 package com.lowt.codepenlowt.controller;
 
 
+import com.lowt.codepenlowt.bean.UserIdBean;
 import com.lowt.codepenlowt.entity.TableUser;
 import com.lowt.codepenlowt.service.TableUserService;
 import com.lowt.codepenlowt.utils.JWTUtils;
@@ -15,6 +16,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -51,9 +53,9 @@ public class UserController {
             playLoad.put("name", tableUser.getUserName());
             token = JWTUtils.getToken(playLoad);
         } catch (Exception e) {
-            return R.error(500,"登陆失败");
+            return R.error(500, "登陆失败");
         }
-        return Objects.requireNonNull(R.ok().put("data", userInfoVO)).put("token",token);
+        return Objects.requireNonNull(R.ok().put("data", userInfoVO)).put("token", token);
     }
 
     // 校验 JR303 加上 前端检查
@@ -102,6 +104,17 @@ public class UserController {
             return R.error();
         }
         return R.ok().put("state", true);
+    }
+
+    
+    @PostMapping("delUser")
+    public R delUser(@RequestBody UserIdBean userIdBean) {
+        try {
+            tableUserService.removeByIds(Arrays.asList(userIdBean.getUserIds()));
+            return R.ok("删除userId" + Arrays.toString(userIdBean.getUserIds()));
+        } catch (Exception e) {
+            return R.error();
+        }
     }
 }
 

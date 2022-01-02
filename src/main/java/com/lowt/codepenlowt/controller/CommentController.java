@@ -1,6 +1,7 @@
 package com.lowt.codepenlowt.controller;
 
 
+import com.lowt.codepenlowt.bean.CommentIdBean;
 import com.lowt.codepenlowt.entity.TableComment;
 import com.lowt.codepenlowt.entity.TableUserLiked;
 import com.lowt.codepenlowt.service.RedisService;
@@ -12,6 +13,7 @@ import com.lowt.codepenlowt.vo.CommentVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -93,9 +95,9 @@ public class CommentController {
 
 
     @PostMapping("delComment")
-    public R delComment(@RequestBody Long commentId) {
+    public R delComment(@RequestBody CommentIdBean commentIdBean) {
         try {
-            tableCommentService.removeById(commentId);
+            tableCommentService.removeByIds(Arrays.asList(commentIdBean.getCommentIds()));
             return R.ok();
         } catch (Exception e) {
             return R.error(500, "删除失败");
