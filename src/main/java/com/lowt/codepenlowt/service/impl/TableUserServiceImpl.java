@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author LOW_TASTE
@@ -22,11 +22,15 @@ public class TableUserServiceImpl extends ServiceImpl<TableUserMapper, TableUser
     @Override
     public TableUser login(LoginInfoVO loginInfoVO) {
         QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_name",loginInfoVO.getUserName())
-                .eq("password",loginInfoVO.getPassword());
+        queryWrapper.eq("user_name", loginInfoVO.getUserName())
+                .eq("password", loginInfoVO.getPassword());
         TableUser tableUser = baseMapper.selectOne(queryWrapper);
-        if (tableUser != null){
-            return tableUser;
+        if (tableUser != null) {
+            if (tableUser.getUserName().equals(loginInfoVO.getUserName()) && tableUser.getPassword().equals(loginInfoVO.getPassword())) {
+                return tableUser;
+            } else {
+                throw new RuntimeException("认证失败");
+            }
         } else {
             throw new RuntimeException("认证失败");
         }
@@ -35,9 +39,9 @@ public class TableUserServiceImpl extends ServiceImpl<TableUserMapper, TableUser
     @Override
     public TableUser register(TableUser tableUser) {
         QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_name",tableUser.getUserName());
+        queryWrapper.eq("user_name", tableUser.getUserName());
         // 用户名占用
-        if (baseMapper.selectOne(queryWrapper) != null){
+        if (baseMapper.selectOne(queryWrapper) != null) {
             throw new RuntimeException("用户名占用");
         } else {
             baseMapper.insert(tableUser);
@@ -48,11 +52,11 @@ public class TableUserServiceImpl extends ServiceImpl<TableUserMapper, TableUser
     @Override
     public void findBackPwd(TableUser tableUser) {
         QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_name",tableUser.getUserName())
-                .eq("user_phone",tableUser.getUserPhone());
+        queryWrapper.eq("user_name", tableUser.getUserName())
+                .eq("user_phone", tableUser.getUserPhone());
         TableUser dbResult = baseMapper.selectOne(queryWrapper);
         // 查到符合条件的用户 可以修改
-        if (dbResult != null){
+        if (dbResult != null) {
             // 结果更换并存入
             dbResult.setPassword(tableUser.getPassword());
             baseMapper.updateById(dbResult);
@@ -66,14 +70,14 @@ public class TableUserServiceImpl extends ServiceImpl<TableUserMapper, TableUser
     public void updateUserInfo(TableUser tableUser) {
         QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
         // 不是这个id
-        queryWrapper.ne("user_id",tableUser.getUserId());
+        queryWrapper.ne("user_id", tableUser.getUserId());
         // 用户名和电话有一个已经存在就不能改
         queryWrapper.and(tableUserQueryWrapper -> {
-            tableUserQueryWrapper.eq("user_name",tableUser.getUserName())
+            tableUserQueryWrapper.eq("user_name", tableUser.getUserName())
                     .or()
-                    .eq("user_phone",tableUser.getUserPhone());
+                    .eq("user_phone", tableUser.getUserPhone());
         });
-        if (baseMapper.selectOne(queryWrapper) != null){
+        if (baseMapper.selectOne(queryWrapper) != null) {
             System.out.println("修改失败");
             throw new RuntimeException("用户名或号码重复(_　_)zZ");
         }
