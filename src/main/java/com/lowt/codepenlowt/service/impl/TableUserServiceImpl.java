@@ -39,7 +39,9 @@ public class TableUserServiceImpl extends ServiceImpl<TableUserMapper, TableUser
     @Override
     public TableUser register(TableUser tableUser) {
         QueryWrapper<TableUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_name", tableUser.getUserName());
+        queryWrapper.eq("user_name", tableUser.getUserName())
+                .or()
+                .eq("user_phone", tableUser.getUserPhone());
         // 用户名占用
         if (baseMapper.selectOne(queryWrapper) != null) {
             throw new RuntimeException("用户名占用");
@@ -78,7 +80,6 @@ public class TableUserServiceImpl extends ServiceImpl<TableUserMapper, TableUser
                     .eq("user_phone", tableUser.getUserPhone());
         });
         if (baseMapper.selectOne(queryWrapper) != null) {
-            System.out.println("修改失败");
             throw new RuntimeException("用户名或号码重复(_　_)zZ");
         }
         baseMapper.updateById(tableUser);
